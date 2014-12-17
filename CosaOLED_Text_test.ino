@@ -20,8 +20,6 @@
 //#define ONE_CHAR '&'
 #define CYCLE_CHARS 10 // ms
 
-//#define POST_GLYPH
-
 #define SH1106
 //#define SSD1306_64_TWI
 //#define SSD1306_64_SPI
@@ -32,7 +30,6 @@
 //#define FIXEDNUMS_8x16
 //#define SEGMENT_32x50
 
-#ifdef POST_GLYPH
 //#define FONT_5x8
 //#define FONT_6x9
 //#define FONT_6x10
@@ -45,7 +42,6 @@
 //#define FONT_7x14B
 //#define FONT_8x16
 //#define FONT_10x20
-#endif
 
 
 #include "Cosa/IOStream/Driver/UART.hh"

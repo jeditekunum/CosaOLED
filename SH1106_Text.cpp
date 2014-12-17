@@ -19,14 +19,14 @@
 
 #include "Cosa/Trace.hh"
 
+#include "SH1106_Text.hh"
+
 #ifdef POST_GLYPH
 #include "Cosa/Canvas/FontGlyph.hh"
 #else
 #include "Cosa/Canvas/Font/System5x7.hh"
 #define FONT system5x7
 #endif
-
-#include "SH1106_Text.hh"
 
 const uint8_t SH1106_Text::script[] __PROGMEM = {
   DISPLAY_OFF, 0,                               // 0xae
