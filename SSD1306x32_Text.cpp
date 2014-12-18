@@ -31,13 +31,13 @@ const uint8_t SSD1306x32_Text::script[] __PROGMEM = {
   COM_SCAN_DEC, 0,                              // 0xc8
   SET_COMPINS, 1, 0x02,                         // 0xda 0x02
   SET_CONTRAST, 1, 0x8f,                        // 0x81 0x8f
-  SET_PRECHARGE, 1, 0x1f,                       // 0xd9 0x1f
+  SET_PRECHARGE, 1, 0xf1,                       // 0xd9 0xf1
   SET_VCOM_DETECT, 1, 0x40,                     // 0xdb 0x40
   DEACTIVATE_SCROLL, 0,                         // 0x2e
   DISPLAY_ALL_ON_RESUME, 0,                     // 0xa4
   NORMAL_DISPLAY, 0,                            // 0xa6
   DISPLAY_ON, 0,                                // 0xaf
-  SCRIPT_END
+  OLED_IO::SCRIPT_END
 };
 
 SSD1306x32_Text::SSD1306x32_Text(OLED_IO* io, Font* font, Board::DigitalPin reset_pin) :
@@ -45,7 +45,7 @@ SSD1306x32_Text::SSD1306x32_Text(OLED_IO* io, Font* font, Board::DigitalPin rese
 {
   // Override SSD1306x64
 
-  m_width_in_pixels = 32;
+  m_height_in_pixels = 32;
   resize();
 }
 
@@ -54,6 +54,12 @@ SSD1306x32_Text::SSD1306x32_Text(OLED_IO* io, Font* font) :
 {
   // Override SSD1306x64
 
-  m_width_in_pixels = 32;
+  m_height_in_pixels = 32;
   resize();
+}
+
+bool
+SSD1306x32_Text::begin()
+{
+  return (shared_begin(script));
 }

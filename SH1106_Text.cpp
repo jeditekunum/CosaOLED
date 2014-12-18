@@ -38,13 +38,13 @@ const uint8_t SH1106_Text::script[] __PROGMEM = {
   COM_SCAN_DEC, 0,                              // 0xc8
   SET_COMPINS, 1, 0x12,                         // 0xda 0x12
   SET_CONTRAST, 1, 0xcf,                        // 0x81 0xcf
-  SET_PRECHARGE, 1, 0x1f,                       // 0xd9 0x1f
+  SET_PRECHARGE, 1, 0xf1,                       // 0xd9 0xf1
   SET_VCOM_DETECT, 1, 0x40,                     // 0xdb 0x40
   DEACTIVATE_SCROLL, 0,                         // 0x2e
   DISPLAY_ALL_ON_RESUME, 0,                     // 0xa4
   NORMAL_DISPLAY, 0,                            // 0xa6
   DISPLAY_ON, 0,                                // 0xaf
-  SCRIPT_END
+  OLED_IO::SCRIPT_END
 };
 
 SH1106_Text::SH1106_Text(OLED_IO* io, Font* font) :
@@ -67,65 +67,10 @@ SH1106_Text::SH1106_Text(OLED_IO* io, Font* font, Board::DigitalPin reset_pin) :
   m_have_reset_pin = true;
 }
 
-bool 
+bool
 SH1106_Text::begin()
 {
-  if (m_initialized) return (false);
-
-  m_io->setup();
-
-#ifdef OLED_IO_DEBUG
-  if (m_io->data_trace())
-    trace << PSTR("SH1106_Text::begin BEGIN") << endl;
-#endif
-
-  if (m_have_reset_pin)
-    {
-#ifdef OLED_IO_DEBUG
-      if (m_io->data_trace())
-        trace << PSTR("SH1106_Text::begin pin reset") << endl;
-#endif
-      OutputPin::write(m_reset_pin, 1);
-      // VDD (3.3V) goes high at start
-      delay(1);
-      // Reset
-      OutputPin::write(m_reset_pin, 0);
-      // Wait 10ms
-      delay(10);
-      // Out of reset
-      OutputPin::write(m_reset_pin, 1);
-    }
-
-  const uint8_t* bp = script;
-  uint8_t count;
-  uint8_t cmd;
-
-  while ((cmd = pgm_read_byte(bp++)) != SCRIPT_END)
-    {
-      count = pgm_read_byte(bp++);
-
-      switch (cmd)
-        {
-        case SW_DELAY:
-          DELAY(count);
-          break;
-
-        default:
-          m_io->write8b(cmd);
-          while (count--) m_io->write8b(pgm_read_byte(bp++));
-          break;
-        }
-    }
-
-  m_initialized = true;
-  display_clear();
-
-#ifdef OLED_IO_DEBUG
-  if (m_io->data_trace())
-    trace << PSTR("SH1106_Text::begin END") << endl;
-#endif
-
-  return (true);
+  return (shared_begin(script));
 }
 
 bool
@@ -277,6 +222,40 @@ SH1106_Text::write(void *buf, size_t size)
     putchar(*dp++);
 
   return (size);
+}
+
+bool 
+SH1106_Text::shared_begin(const uint8_t* s)
+{
+  if (m_initialized) return (false);
+
+  m_io->setup();
+
+#ifdef OLED_IO_DEBUG
+  if (m_io->data_trace())
+    trace << PSTR("SH1106_Text::shared_begin BEGIN") << endl;
+#endif
+
+  if (m_have_reset_pin)
+    {
+#ifdef OLED_IO_DEBUG
+      if (m_io->data_trace())
+        trace << PSTR("SH1106_Text::shared_begin pin reset") << endl;
+#endif
+      m_io->reset_device(m_reset_pin);
+    }
+
+  m_io->play_script(s);
+
+  m_initialized = true;
+  display_clear();
+
+#ifdef OLED_IO_DEBUG
+  if (m_io->data_trace())
+    trace << PSTR("SH1106_Text::shared_begin END") << endl;
+#endif
+
+  return (true);
 }
 
 void

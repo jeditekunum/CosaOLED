@@ -182,6 +182,12 @@ protected:
   uint8_t m_height;
 
   /**
+   * For use by subclasses.
+   * @return boolean.
+   */
+  bool shared_begin(const uint8_t* s);
+
+  /**
    * Write character to display.
    * @param[in] c character.
    */
@@ -215,9 +221,6 @@ protected:
    * Commands
    */
   enum Command {
-    SW_DELAY = 0xf0,   // pseudo
-    SCRIPT_END = 0xf1,   // pseudo
-
     DISPLAY_OFF = 0xae,
     DISPLAY_ON = 0xaf,
     DISPLAY_ALL_ON_RESUME = 0xa4,

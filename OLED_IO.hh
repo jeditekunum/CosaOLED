@@ -22,7 +22,7 @@
 
 #include "Cosa/Types.h"
 
-#define OLED_IO_DEBUG
+//#define OLED_IO_DEBUG
 
 /**
  * Abstract OLED IO adapter to isolate communication specific
@@ -78,11 +78,40 @@ public:
    * Get data/command mode.
    * @return mode.
    */
-  virtual mode_t mode()
+  mode_t mode()
     __attribute__((always_inline))
   {
     return (m_mode);
   }
+
+  /**
+   * @override OLED_IO
+   * Reset device.
+   * @param[in] pin.
+   */
+  void reset_device(Board::DigitalPin reset_pin);
+
+  /**
+   * Scripts are a sequence of bytes of the form
+   * {command, #args, args...}
+   * Command may be a special script control.
+   */
+
+  /**
+   * Script control options.
+   * (Cannot be real commands.)
+   */
+  enum Command {
+    SW_DELAY = 0xf0,
+    SCRIPT_END = 0xf1
+  } __attribute__((packed));
+
+  /**
+   * @override OLED_IO
+   * Play script. (in PROGMEM)
+   * @param script.
+   */
+  void play_script(const uint8_t* script);
 
 #ifdef OLED_IO_DEBUG
   /**

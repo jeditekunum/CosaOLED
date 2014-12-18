@@ -41,6 +41,14 @@ public:
 
   SSD1306x32_Text(OLED_IO* io, Font* font);
 
+  /**
+   * @override SH1106_Text
+   * Start display for text output. Returns true if successful
+   * otherwise false.
+   * @return boolean.
+   */
+  virtual bool begin();
+
 protected:
   /**
    * Initialization script (in program memory).
