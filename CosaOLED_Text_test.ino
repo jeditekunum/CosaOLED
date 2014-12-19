@@ -18,7 +18,7 @@
  */
 
 //#define ONE_CHAR '&'
-#define CYCLE_CHARS 10 // ms
+#define CYCLE_CHARS 0 // ms; 0 to benchmark
 
 #define SH1106
 //#define SSD1306_64_TWI
@@ -51,6 +51,7 @@
 
 #include "Cosa/IOStream/Driver/UART.hh"
 #include "Cosa/Trace.hh"
+#include "Cosa/RTC.hh"
 #include "Cosa/OutputPin.hh"
 
 #include "OLED_IO_TWI.hh"
@@ -197,6 +198,9 @@ OutputPin led(Board::LED);
 IOStream ios(&uart);
 static IOStream oledout(&oled);
 
+#define STRINGIFY_(x) #x
+#define STRINGIFY(x) STRINGIFY_(x)
+
 
 void setup()
 {
@@ -218,6 +222,11 @@ void setup()
 #ifdef ONE_CHAR
   oled.putchar(ONE_CHAR);
 #endif
+
+  RTC::begin();
+
+  trace << PSTR("Font ") << STRINGIFY(FONT)
+        << PSTR(" has ") << (FONT.LAST-FONT.FIRST+1) << PSTR(" characters") << endl;
 }
 
 uint8_t row = 0;
@@ -226,6 +235,10 @@ uint8_t col = 0;
 void loop()
 {
 #ifdef CYCLE_CHARS
+#if CYCLE_CHARS == 0
+  MEASURE("full character set ", 20)
+#endif
+  {
 #if defined(FIXEDNUMS_8x16) || defined(SEGMENT_32x50)
   for (unsigned char c = FONT.first(); c <= FONT.last(); c++)
 #else
@@ -247,6 +260,7 @@ void loop()
           oled.set_cursor(col, row);
         }
     }
+  }
 #else
   delay(100);
 #endif
