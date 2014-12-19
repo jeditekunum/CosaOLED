@@ -40,8 +40,13 @@
 //#define FONT_7x13B
 //#define FONT_7x14
 //#define FONT_7x14B
+//#define FONT_8x13
+//#define FONT_8x13B
 //#define FONT_8x16
+//#define FONT_9x15
+//#define FONT_9x15B
 //#define FONT_10x20
+//#define FONT_12x24
 
 
 #include "Cosa/IOStream/Driver/UART.hh"
@@ -107,14 +112,39 @@
 #define FONT font7x14B
 #endif
 
+#ifdef FONT_8x13
+#include "Cosa/Canvas/Font/Font8x13.hh"
+#define FONT font8x13
+#endif
+
+#ifdef FONT_8x13B
+#include "Cosa/Canvas/Font/Font8x13B.hh"
+#define FONT font8x13B
+#endif
+
 #ifdef FONT_8x16
 #include "Cosa/Canvas/Font/Font8x16.hh"
 #define FONT font8x16
 #endif
 
+#ifdef FONT_9x15
+#include "Cosa/Canvas/Font/Font9x15.hh"
+#define FONT font9x15
+#endif
+
+#ifdef FONT_9x15B
+#include "Cosa/Canvas/Font/Font9x15B.hh"
+#define FONT font9x15B
+#endif
+
 #ifdef FONT_10x20
 #include "Cosa/Canvas/Font/Font10x20.hh"
 #define FONT font10x20
+#endif
+
+#ifdef FONT_12x24
+#include "Cosa/Canvas/Font/Font12x24.hh"
+#define FONT font12x24
 #endif
 
 #ifdef FIXEDNUMS_8x16

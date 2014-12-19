@@ -373,8 +373,8 @@ void
 SH1106_Text::resize()
 {
 #ifdef POST_GLYPH
-  m_width = m_width_in_pixels / (m_font->width('z') + m_font->spacing());
-  m_height = m_height_in_pixels / (m_font->height('z') + m_font->line_spacing());
+  m_width = m_width_in_pixels / (m_font->WIDTH + m_font->SPACING);
+  m_height = m_height_in_pixels / (m_font->WIDTH + m_font->LINE_SPACING);
 #else
   m_width = m_width_in_pixels / (FONT.WIDTH + FONT.SPACING);
   m_height = m_height_in_pixels / FONT.HEIGHT;
