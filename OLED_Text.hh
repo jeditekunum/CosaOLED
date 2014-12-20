@@ -20,7 +20,7 @@
 #ifndef COSA_X_OLED_TEXT_HH
 #define COSA_X_OLED_TEXT_HH
 
-#define POST_GLYPH
+//#define POST_GLYPH
 
 #include "Cosa/LCD.hh"
 #include "Cosa/Canvas/Font.hh"
