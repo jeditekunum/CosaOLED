@@ -298,7 +298,7 @@ SH1106_Text::print(char c)
       m_io->write8b(SET_HIGH_COLUMN | (start>>4));
 
       set_data_mode();
-      m_io->write8n((void*)glyph.next_stripe(), glyph.WIDTH);
+      m_io->write8n((void*)glyph.next_stripe(), w);
       set_instruction_mode();
 
       stripe++;
