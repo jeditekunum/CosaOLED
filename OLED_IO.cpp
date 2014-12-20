@@ -22,23 +22,6 @@
 #include "OLED_IO.hh"
 
 void
-OLED_IO::reset_device(Board::DigitalPin reset_pin)
-{
-  // High
-  OutputPin::write(reset_pin, 1);
-  delay(1);
-
-  // Reset
-  OutputPin::write(reset_pin, 0);
-
-  // Wait 10ms
-  delay(10);
-
-  // Out of reset
-  OutputPin::write(reset_pin, 1);
-}
-
-void
 OLED_IO::play_script(const uint8_t* script)
 {
   const uint8_t* bp = script;

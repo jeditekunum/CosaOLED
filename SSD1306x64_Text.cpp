@@ -40,24 +40,8 @@ const uint8_t SSD1306x64_Text::script[] __PROGMEM = {
   OLED_IO::SCRIPT_END
 };
 
-SSD1306x64_Text::SSD1306x64_Text(OLED_IO* io, Font* font, Board::DigitalPin reset_pin) :
-  SH1106_Text(io, font, reset_pin)
-{
-  // Override SH1106
-
-  m_column_offset = 0;
-}
-
-SSD1306x64_Text::SSD1306x64_Text(OLED_IO* io, Font* font) :
-  SH1106_Text(io, font)
-{
-  // Override SH1106
-
-  m_column_offset = 0;
-}
-
 bool
 SSD1306x64_Text::begin()
 {
-  return (shared_begin(script));
+  return (oled_begin(script));
 }

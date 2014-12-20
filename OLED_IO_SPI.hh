@@ -33,11 +33,11 @@ public:
    * Construct SSD1306_Text 4-wire serial port connected to given
    * enable/chip select pin and data/command pin.  Uses the SPI::MOSI
    * and SPI::SCK pins.
-   * @param[in] en enable (cs) pulse.
+   * @param[in] cs enable (cs) pulse.
    * @param[in] dc data/command pin.
    */
-  OLED_IO_SPI(Board::DigitalPin en, Board::DigitalPin dc) :
-    SPI::Driver(en, SPI::PULSE_HIGH),
+  OLED_IO_SPI(Board::DigitalPin cs, Board::DigitalPin dc) :
+    SPI::Driver(cs, SPI::PULSE_HIGH),
     m_dc(dc)
   {
     m_mode = INSTRUCTION;

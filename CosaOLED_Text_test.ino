@@ -169,28 +169,28 @@ static SH1106_Text oled(&oled_port, (Font*)&FONT);
 #define DEVICE "SSD1306 64 TWI"
 #include "SSD1306x64_Text.hh"
 static OLED_IO_TWI oled_port(0x3d);
-static SSD1306x64_Text oled(&oled_port, (Font*)&FONT, Board::D0); // reset
+static SSD1306x64_Text oled(&oled_port, (Font*)&FONT);
 #endif
 
 #ifdef SSD1306_32_TWI
 #define DEVICE "SSD1306 32 TWI"
 #include "SSD1306x32_Text.hh"
 static OLED_IO_TWI oled_port(0x3c);
-static SSD1306x32_Text oled(&oled_port, (Font*)&FONT, Board::D0); // reset
+static SSD1306x32_Text oled(&oled_port, (Font*)&FONT);
 #endif
 
 #ifdef SSD1306_64_SPI
 #define DEVICE "SSD1306 64 SPI"
 #include "SSD1306x64_Text.hh"
 static OLED_IO_SPI oled_port(Board::D1, Board::D2);  // cs, dc
-static SSD1306x64_Text oled(&oled_port, (Font*)&FONT, Board::D0); // reset
+static SSD1306x64_Text oled(&oled_port, (Font*)&FONT);
 #endif
 
 #ifdef SSD1306_32_SPI
 #define DEVICE "SSD1306 32 SPI"
 #include "SSD1306x32_Text.hh"
 static OLED_IO_SPI oled_port(Board::D1, Board::D2);  // cs, dc
-static SSD1306x32_Text oled(&oled_port, (Font*)&FONT, Board::D0); // reset
+static SSD1306x32_Text oled(&oled_port, (Font*)&FONT);
 #endif
 
 OutputPin led(Board::LED);
@@ -221,6 +221,9 @@ void setup()
   oled.set_cursor(0, 0);
 #ifdef ONE_CHAR
   oled.putchar(ONE_CHAR);
+#endif
+#if !defined(ONE_CHAR) && !defined(CYCLE_CHARS)
+  oledout << PSTR("Hello World!");
 #endif
 
   RTC::begin();

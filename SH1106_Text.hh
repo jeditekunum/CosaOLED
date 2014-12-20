@@ -20,12 +20,10 @@
 #ifndef COSA_X_SH1106_TEXT_HH
 #define COSA_X_SH1106_TEXT_HH
 
-//#define POST_GLYPH
-
 #include "Cosa/LCD.hh"
 #include "Cosa/Canvas/Font.hh"
 
-#include "OLED_IO.hh"
+#include "OLED_Text.hh"
 
 /**
  * SH1106 Dot Matrix OLED/PLED Segment/Common Driver with Controller
@@ -33,18 +31,22 @@
  *
  * SH1106 is manufactured by Sino Wealth Electronic Ltd.
  */
-class SH1106_Text : public LCD::Device {
+class SH1106_Text : public OLED_Text {
 public:
   /**
    * Construct SH1106_Text OLED connected to given io port handler. The
    * display is initialized when calling begin(). 
    * @param[in] io handler.
    * @param[in] font font to display.
-   * @param[in] display reset pin (optional).
+   * @param[in] screen_width.
+   * @param[in] screen_height.
+   * @param[in] column_offset.
    */
-  SH1106_Text(OLED_IO* io, Font* font, Board::DigitalPin reset_pin);
-
-  SH1106_Text(OLED_IO* io, Font* font);
+  SH1106_Text(OLED_IO* io, Font* font,
+              uint8_t screen_width = 128, uint8_t screen_height = 64,
+              uint8_t column_offset = 2) :
+    OLED_Text(io, font, screen_width, screen_height, column_offset)
+  {}
 
   /**
    * @override LCD::Device
@@ -53,13 +55,6 @@ public:
    * @return boolean.
    */
   virtual bool begin();
-
-  /**
-   * @override LCD::Device
-   * Stop display and power down. Returns true if successful 
-   * otherwise false.
-   */
-  virtual bool end();
 
   /**
    * @override LCD::Device
@@ -91,101 +86,11 @@ public:
    */
   virtual void display_clear();
 
-  /**
-   * @override LCD::Device
-   * Set cursor position to given position.
-   * @param[in] x.
-   * @param[in] y.
-   */
-  virtual void set_cursor(uint8_t x, uint8_t y);
-
-  /**
-   * @override IOStream::Device
-   * Write character to display. Handles carriage-return-line-feed, back-
-   * space, alert, horizontal tab and form-feed. Returns character or EOF 
-   * on error.
-   * @param[in] c character to write.
-   * @return character written or EOF(-1).
-   */
-  virtual int putchar(char c);
-
-  /**
-   * @override IOStream::Device
-   * Write data from buffer with given size to device.
-   * @param[in] buf buffer to write.
-   * @param[in] size number of bytes to write.
-   * @return number of bytes written or EOF(-1).
-   */
-  virtual int write(void* buf, size_t size);
-
-  /**
-   * Clear to end of line.
-   */
-  void line_clear()
-  {
-    uint8_t x, y;
-    get_cursor(x, y);
-    while (m_x < m_width) putchar(' ');
-    set_cursor(x, y);
-  }
-
-  /**
-   * Get width in characters.
-   */
-  uint8_t width()
-    __attribute__((always_inline))
-  {
-    return (m_width);
-  }
-
-  /**
-   * Get height in characters.
-   */
-  uint8_t height()
-    __attribute__((always_inline))
-  {
-    return (m_height);
-  }
-
 protected:
-  /** Display IO. */
-  OLED_IO* m_io;
-
-  /** Optional reset pin */
-  Board::DigitalPin m_reset_pin;
-  bool m_have_reset_pin;
-
-  /** Width in display. */
-  uint8_t m_width_in_pixels;
-
-  /** Column offset. */
-  uint8_t m_column_offset;
-
-  /** Height in display. */
-  uint8_t m_height_in_pixels;
-
-  /**
-   * Font.
-   */
-  Font* m_font;
-
   /**
    * Initialization script (in program memory).
    */
   static const uint8_t script[] PROGMEM;
-  uint8_t m_initialized;
-
-  /** Display width (characters per line). */
-  uint8_t m_width;
-
-  /** Display height (lines). */
-  uint8_t m_height;
-
-  /**
-   * For use by subclasses.
-   * @return boolean.
-   */
-  bool shared_begin(const uint8_t* s);
 
   /**
    * Write character to display.
@@ -193,29 +98,6 @@ protected:
    */
 
   virtual void print(char c);
-
-  /**
-   * Set communication in data stream mode.
-   */
-  virtual void set_data_mode() 
-    __attribute__((always_inline))
-  { 
-    m_io->mode(OLED_IO::DATA);
-  }
-
-  /**
-   * Set communication in instruction stream mode.
-   */
-  virtual void set_instruction_mode() 
-    __attribute__((always_inline))
-  { 
-    m_io->mode(OLED_IO::INSTRUCTION);
-  }
-
-  /**
-   * Resize (recalculates character width/height)
-   */
-  virtual void resize();
 
   /**
    * Commands

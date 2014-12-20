@@ -35,11 +35,15 @@ public:
    * display is initialized when calling begin(). 
    * @param[in] io handler.
    * @param[in] font font to display.
-   * @param[in] display reset pin (optional).
+   * @param[in] screen_width.
+   * @param[in] screen_height.
+   * @param[in] column_offset.
    */
-  SSD1306x64_Text(OLED_IO* io, Font* font, Board::DigitalPin reset_pin);
-
-  SSD1306x64_Text(OLED_IO* io, Font* font);
+  SSD1306x64_Text(OLED_IO* io, Font* font,
+                  uint8_t screen_width = 128, uint8_t screen_height = 64,
+                  uint8_t column_offset = 0) :
+    SH1106_Text(io, font, screen_width, screen_height, column_offset)
+  {}
 
   /**
    * @override SH1106_Text

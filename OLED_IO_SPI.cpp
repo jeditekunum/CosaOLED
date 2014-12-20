@@ -19,10 +19,6 @@
 
 #include "OLED_IO_SPI.hh"
 
-#ifdef OLED_IO_DEBUG
-#include "Cosa/Trace.hh"
-#endif
-
 void
 OLED_IO_SPI::setup()
 {

@@ -40,26 +40,8 @@ const uint8_t SSD1306x32_Text::script[] __PROGMEM = {
   OLED_IO::SCRIPT_END
 };
 
-SSD1306x32_Text::SSD1306x32_Text(OLED_IO* io, Font* font, Board::DigitalPin reset_pin) :
-  SSD1306x64_Text(io, font, reset_pin)
-{
-  // Override SSD1306x64
-
-  m_height_in_pixels = 32;
-  resize();
-}
-
-SSD1306x32_Text::SSD1306x32_Text(OLED_IO* io, Font* font) :
-  SSD1306x64_Text(io, font)
-{
-  // Override SSD1306x64
-
-  m_height_in_pixels = 32;
-  resize();
-}
-
 bool
 SSD1306x32_Text::begin()
 {
-  return (shared_begin(script));
+  return (oled_begin(script));
 }

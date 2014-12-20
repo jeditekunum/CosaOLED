@@ -24,6 +24,10 @@
 
 //#define OLED_IO_DEBUG
 
+#ifdef OLED_IO_DEBUG
+#include "Cosa/Trace.hh"
+#endif
+
 /**
  * Abstract OLED IO adapter to isolate communication specific
  * functions and allow access over serial interfaces; I2C/TWI
@@ -83,13 +87,6 @@ public:
   {
     return (m_mode);
   }
-
-  /**
-   * @override OLED_IO
-   * Reset device.
-   * @param[in] pin.
-   */
-  void reset_device(Board::DigitalPin reset_pin);
 
   /**
    * Scripts are a sequence of bytes of the form
