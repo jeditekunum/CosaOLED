@@ -204,6 +204,14 @@ static IOStream oledout(&oled);
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
 
+#ifdef SYSTEM_5x7
+#define FONT_FIRST 0x0
+#define FONT_LAST 0x7f
+#else
+#define FONT_FIRST FONT.FIRST
+#define FONT_LAST FONT.LAST
+#endif
+
 
 void setup()
 {
@@ -230,7 +238,7 @@ void setup()
   RTC::begin();
 
   trace << PSTR("Font ") << STRINGIFY(FONT)
-        << PSTR(" has ") << (FONT.LAST-FONT.FIRST+1) << PSTR(" characters") << endl;
+        << PSTR(" has ") << (FONT_LAST-FONT_FIRST+1) << PSTR(" characters") << endl;
 }
 
 uint8_t row = 0;
@@ -244,7 +252,7 @@ void loop()
 #endif
   {
 #if defined(FIXEDNUMS_8x16) || defined(SEGMENT_32x50)
-  for (unsigned char c = FONT.first(); c <= FONT.last(); c++)
+  for (unsigned char c = FONT_FIRST; c <= FONT_LAST; c++)
 #else
   for (unsigned char c = ' '; c <= '~'; c++)
 #endif
