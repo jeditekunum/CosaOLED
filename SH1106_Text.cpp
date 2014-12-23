@@ -19,6 +19,9 @@
 
 #include "SH1106_Text.hh"
 
+#include "Cosa/Canvas/FontGlyph.hh"
+
+
 const uint8_t SH1106_Text::script[] __PROGMEM = {
   DISPLAY_OFF, 0,                               // 0xae
   SET_DISPLAY_CLOCK_DIV, 1, 0x80,               // 0xd5 0x80
