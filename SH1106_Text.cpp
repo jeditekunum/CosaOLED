@@ -19,8 +19,9 @@
 
 #include "SH1106_Text.hh"
 
+#ifdef POST_GLYPH
 #include "Cosa/Canvas/FontGlyph.hh"
-
+#endif
 
 const uint8_t SH1106_Text::script[] __PROGMEM = {
   DISPLAY_OFF, 0,                               // 0xae
@@ -175,19 +176,22 @@ SH1106_Text::print(char c)
 
   glyph.end();
 #else
-  // Set row (page)
-  m_io->write8b(0xb0 | m_y);
-
-  // Set column start
-  m_io->write8b(SET_LOW_COLUMN | (start & 0xf));
-  m_io->write8b(SET_HIGH_COLUMN | (start>>4));
-
   const uint8_t* bp = m_font->get_bitmap(c);
 
-  set_data_mode();
-  for (uint8_t i = 0; i<m_font->WIDTH; i++)
-    m_io->write8b(pgm_read_byte(bp++));
-  set_instruction_mode();
+  for (uint8_t stripe = 0; stripe < ((m_font->HEIGHT + (CHARBITS-1)) / CHARBITS); stripe++)
+    {
+      // Set row (page)
+      m_io->write8b(0xb0 | ((m_y * ((m_font->HEIGHT + (CHARBITS-1)) / CHARBITS)) + stripe));
+
+      // Set column start
+      m_io->write8b(SET_LOW_COLUMN | (start & 0xf));
+      m_io->write8b(SET_HIGH_COLUMN | (start>>4));
+      
+      set_data_mode();
+      for (uint8_t i = 0; i<m_font->WIDTH; i++)
+        m_io->write8b(pgm_read_byte(bp++));
+      set_instruction_mode();
+    }
 #endif
 
 #ifdef OLED_IO_DEBUG
