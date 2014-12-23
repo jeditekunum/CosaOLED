@@ -20,6 +20,9 @@
 //#define ONE_CHAR '&'
 #define CYCLE_CHARS 0 // ms; 0 to benchmark
 
+#define FLIPPED false
+//#define FLIPPED true
+
 #define SH1106
 //#define SSD1306_64_TWI
 //#define SSD1306_64_SPI
@@ -162,35 +165,35 @@
 #define DEVICE "SH1106"
 #include "SH1106_Text.hh"
 static OLED_IO_TWI oled_port(0x3c);
-static SH1106_Text oled(&oled_port, (Font*)&FONT);
+static SH1106_Text oled(&oled_port, (Font*)&FONT, FLIPPED);
 #endif
 
 #ifdef SSD1306_64_TWI
 #define DEVICE "SSD1306 64 TWI"
 #include "SSD1306x64_Text.hh"
 static OLED_IO_TWI oled_port(0x3d);
-static SSD1306x64_Text oled(&oled_port, (Font*)&FONT);
+static SSD1306x64_Text oled(&oled_port, (Font*)&FONT, FLIPPED);
 #endif
 
 #ifdef SSD1306_32_TWI
 #define DEVICE "SSD1306 32 TWI"
 #include "SSD1306x32_Text.hh"
 static OLED_IO_TWI oled_port(0x3c);
-static SSD1306x32_Text oled(&oled_port, (Font*)&FONT);
+static SSD1306x32_Text oled(&oled_port, (Font*)&FONT, FLIPPED);
 #endif
 
 #ifdef SSD1306_64_SPI
 #define DEVICE "SSD1306 64 SPI"
 #include "SSD1306x64_Text.hh"
-static OLED_IO_SPI oled_port(Board::D1, Board::D2);  // cs, dc
-static SSD1306x64_Text oled(&oled_port, (Font*)&FONT);
+static OLED_IO_SPI oled_port(Board::D11);
+static SSD1306x64_Text oled(&oled_port, (Font*)&FONT, FLIPPED);
 #endif
 
 #ifdef SSD1306_32_SPI
 #define DEVICE "SSD1306 32 SPI"
 #include "SSD1306x32_Text.hh"
-static OLED_IO_SPI oled_port(Board::D1, Board::D2);  // cs, dc
-static SSD1306x32_Text oled(&oled_port, (Font*)&FONT);
+static OLED_IO_SPI oled_port(Board::D11);
+static SSD1306x32_Text oled(&oled_port, (Font*)&FONT, FLIPPED);
 #endif
 
 OutputPin led(Board::LED);
@@ -206,8 +209,6 @@ void setup()
 {
   uart.begin(9600);
   trace.begin(&uart);
-
-  sleep(1);
 
   led.on();
 

@@ -38,14 +38,17 @@ public:
    * display is initialized when calling begin(). 
    * @param[in] io handler.
    * @param[in] font font to display.
+   * @param[in] flipped screen.
    * @param[in] screen_width.
    * @param[in] screen_height.
    * @param[in] column_offset.
    */
   SH1106_Text(OLED_IO* io, Font* font,
+              bool flipped = false,
               uint8_t screen_width = 128, uint8_t screen_height = 64,
               uint8_t column_offset = 2) :
-    OLED_Text(io, font, screen_width, screen_height, column_offset)
+    OLED_Text(io, font, screen_width, screen_height, column_offset),
+    m_flipped(flipped)
   {}
 
   /**
@@ -88,9 +91,15 @@ public:
 
 protected:
   /**
+   * Configure for flipped?
+   */
+  const bool m_flipped;
+
+  /**
    * Initialization script (in program memory).
    */
   static const uint8_t script[] PROGMEM;
+  static const uint8_t flipped_script[] PROGMEM;
 
   /**
    * Write character to display.

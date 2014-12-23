@@ -162,6 +162,21 @@ protected:
   uint8_t m_rows;
 
   /**
+   * Scripts are a sequence of bytes of the form
+   * {command, #args, args...}
+   * Command may be a special script control.
+   */
+
+  /**
+   * Script control options.
+   * (Cannot be real commands.)
+   */
+  enum Command {
+    SW_DELAY = 0xf0,
+    SCRIPT_END = 0xf1
+  } __attribute__((packed));
+
+  /**
    * Begin with script execution.
    * @param[in] script.
    */

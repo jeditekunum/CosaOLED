@@ -35,14 +35,19 @@ public:
    * display is initialized when calling begin(). 
    * @param[in] io handler.
    * @param[in] font font to display.
+   * @param[in] flipped screen.
    * @param[in] screen_width.
    * @param[in] screen_height.
    * @param[in] column_offset.
    */
   SSD1306x32_Text(OLED_IO* io, Font* font,
+                  bool flipped = false,
                   uint8_t screen_width = 128, uint8_t screen_height = 32,
                   uint8_t column_offset = 0) :
-    SSD1306x64_Text(io, font, screen_width, screen_height, column_offset)
+    SSD1306x64_Text(io, font,
+                    flipped,
+                    screen_width, screen_height,
+                    column_offset)
   {}
 
   /**
@@ -58,5 +63,6 @@ protected:
    * Initialization script (in program memory).
    */
   static const uint8_t script[] PROGMEM;
+  static const uint8_t flipped_script[] PROGMEM;
 };
 #endif

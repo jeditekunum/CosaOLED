@@ -35,13 +35,35 @@ const uint8_t SH1106_Text::script[] __PROGMEM = {
   DISPLAY_ALL_ON_RESUME, 0,                     // 0xa4
   NORMAL_DISPLAY, 0,                            // 0xa6
   DISPLAY_ON, 0,                                // 0xaf
-  OLED_IO::SCRIPT_END
+  SCRIPT_END
+};
+
+const uint8_t SH1106_Text::flipped_script[] __PROGMEM = {
+  DISPLAY_OFF, 0,                               // 0xae
+  SET_DISPLAY_CLOCK_DIV, 1, 0x80,               // 0xd5 0x80
+  SET_MULTIPLEX, 1, 0x3f,                       // 0xa8 0x3f
+  SET_DISPLAY_OFFSET, 1, 0,                     // 0xd3 0x00
+  SET_START_LINE, 0,                            // 0x40
+  SEG_REMAP | 0x0, 0,                           // 0xa0 | 0x0 *
+  COM_SCAN_INC, 0,                              // 0xc0 *
+  SET_COMPINS, 1, 0x12,                         // 0xda 0x12
+  SET_CONTRAST, 1, 0xcf,                        // 0x81 0xcf
+  SET_PRECHARGE, 1, 0xf1,                       // 0xd9 0xf1
+  SET_VCOM_DETECT, 1, 0x40,                     // 0xdb 0x40
+  DEACTIVATE_SCROLL, 0,                         // 0x2e
+  DISPLAY_ALL_ON_RESUME, 0,                     // 0xa4
+  NORMAL_DISPLAY, 0,                            // 0xa6
+  DISPLAY_ON, 0,                                // 0xaf
+  SCRIPT_END
 };
 
 bool
 SH1106_Text::begin()
 {
-  return (oled_begin(script));
+  if (m_flipped)
+    return (oled_begin(flipped_script));
+  else
+    return (oled_begin(script));
 }
 
 void
@@ -140,7 +162,8 @@ SH1106_Text::print(char c)
       m_io->write8b(SET_HIGH_COLUMN | (start>>4));
 
       set_data_mode();
-      m_io->write8n((void*)glyph.next_stripe(), m_font->WIDTH);
+      for (uint8_t i = 0; i<m_font->WIDTH; i++)
+        m_io->write8b(glyph.next());
       set_instruction_mode();
 
       stripe++;

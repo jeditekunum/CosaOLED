@@ -88,28 +88,6 @@ public:
     return (m_mode);
   }
 
-  /**
-   * Scripts are a sequence of bytes of the form
-   * {command, #args, args...}
-   * Command may be a special script control.
-   */
-
-  /**
-   * Script control options.
-   * (Cannot be real commands.)
-   */
-  enum Command {
-    SW_DELAY = 0xf0,
-    SCRIPT_END = 0xf1
-  } __attribute__((packed));
-
-  /**
-   * @override OLED_IO
-   * Play script. (in PROGMEM)
-   * @param script.
-   */
-  void play_script(const uint8_t* script);
-
 #ifdef OLED_IO_DEBUG
   /**
    * @override OLED_IO

@@ -31,7 +31,26 @@ OLED_Text::oled_begin(const uint8_t* script)
     trace << PSTR("OLED_Text::begin BEGIN") << endl;
 #endif
 
-  m_io->play_script(script);
+  const uint8_t* bp = script;
+  uint8_t count;
+  uint8_t cmd;
+
+  while ((cmd = pgm_read_byte(bp++)) != SCRIPT_END)
+    {
+      count = pgm_read_byte(bp++);
+
+      switch (cmd)
+        {
+        case SW_DELAY:
+          DELAY(count);
+          break;
+
+        default:
+          m_io->write8b(cmd);
+          while (count--) m_io->write8b(pgm_read_byte(bp++));
+          break;
+        }
+    }
 
   m_initialized = true;
   display_clear();

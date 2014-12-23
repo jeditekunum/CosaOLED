@@ -36,7 +36,16 @@ public:
    * @param[in] cs enable (cs) pulse.
    * @param[in] dc data/command pin.
    */
-  OLED_IO_SPI(Board::DigitalPin cs, Board::DigitalPin dc) :
+#if defined(BOARD_ATTINYX4)
+  OLED_IO_SPI(Board::DigitalPin cs = Board::D3,
+              Board::DigitalPin dc = Board::D7) :
+#elif defined(BOARD_ATTINYX5)
+  OLED_IO_SPI(Board::DigitalPin cs = Board::D3,
+              Board::DigitalPin dc = Board::D4) :
+#else
+  OLED_IO_SPI(Board::DigitalPin cs = Board::D10,
+              Board::DigitalPin dc = Board::D9) :
+#endif
     SPI::Driver(cs, SPI::PULSE_HIGH),
     m_dc(dc)
   {
