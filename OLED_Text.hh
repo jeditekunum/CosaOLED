@@ -20,8 +20,6 @@
 #ifndef COSA_X_OLED_TEXT_HH
 #define COSA_X_OLED_TEXT_HH
 
-//#define POST_GLYPH
-
 #include "Cosa/LCD.hh"
 #include "Cosa/Canvas/Font.hh"
 
@@ -51,11 +49,7 @@ public:
     m_column_offset(column_offset),
     m_screen_height(screen_height),
     m_columns(screen_width / (m_font->WIDTH + m_font->SPACING)),
-#ifdef POST_GLYPH
     m_rows(screen_height / (m_font->HEIGHT + m_font->LINE_SPACING))
-#else
-    m_rows(screen_height / (m_font->HEIGHT + 1))
-#endif
   {}
 
   /**
