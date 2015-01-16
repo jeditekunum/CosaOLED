@@ -141,7 +141,7 @@ SH1106_Text::print(char c)
     trace << PSTR("SH1106_Text::print('") << c << PSTR("') BEGIN") << endl;
 #endif
 
-  const uint8_t* bp = m_font->get_bitmap(c);
+  Font::Glyph glyph(m_font,c);
 
   for (uint8_t stripe = 0; stripe < ((m_font->HEIGHT + (CHARBITS-1)) / CHARBITS); stripe++)
     {
@@ -154,7 +154,7 @@ SH1106_Text::print(char c)
       
       set_data_mode();
       for (uint8_t i = 0; i<m_font->WIDTH; i++)
-        m_io->write8b(pgm_read_byte(bp++));
+        m_io->write8b(glyph.next());
       set_instruction_mode();
     }
 

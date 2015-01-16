@@ -55,7 +55,6 @@
 #include "Cosa/IOStream/Driver/UART.hh"
 #include "Cosa/Trace.hh"
 #include "Cosa/RTC.hh"
-#include "Cosa/OutputPin.hh"
 
 #include "OLED_IO_TWI.hh"
 #include "OLED_IO_SPI.hh"
@@ -196,8 +195,6 @@ static OLED_IO_SPI oled_port(Board::D11);
 static SSD1306x32_Text oled(&oled_port, (Font*)&FONT, FLIPPED);
 #endif
 
-OutputPin led(Board::LED);
-
 IOStream ios(&uart);
 static IOStream oledout(&oled);
 
@@ -212,37 +209,42 @@ static IOStream oledout(&oled);
 #define FONT_LAST FONT.LAST
 #endif
 
+uint8_t col = 0;
+uint8_t row = 0;
 
 void setup()
 {
+  RTC::begin();
   uart.begin(9600);
   trace.begin(&uart);
-
-  led.on();
-
-  ios << endl << PSTR("CosaOLED_Text_test: ") << PSTR(DEVICE) << PSTR(" started") << endl;
+  trace << PSTR("CosaCanvasFont: started ")
+        << PSTR(DEVICE)
+        << PSTR(" font ") << STRINGIFY(FONT)
+        << endl;
 
   oled.begin();
-  oled.display_inverse(); // flash
+
+  // Flash
+  oled.display_inverse();
   delay(250);
   oled.display_normal();
 
-  oled.set_cursor(0, 0);
+  oled.set_cursor(col, row);
+
 #ifdef ONE_CHAR
   oled.putchar(ONE_CHAR);
 #endif
+
 #if !defined(ONE_CHAR) && !defined(CYCLE_CHARS)
   oledout << PSTR("Hello World!");
 #endif
 
-  RTC::begin();
-
-  trace << PSTR("Font ") << STRINGIFY(FONT)
-        << PSTR(" has ") << (FONT_LAST-FONT_FIRST+1) << PSTR(" characters") << endl;
+#ifdef CYCLE_CHARS
+  trace << PSTR("Font has ") << (FONT.LAST-FONT.FIRST+1) 
+	<< PSTR(" characters") 
+	<< endl;
+#endif
 }
-
-uint8_t row = 0;
-uint8_t col = 0;
 
 void loop()
 {
@@ -251,27 +253,33 @@ void loop()
   MEASURE("full character set ", 20)
 #endif
   {
-#if defined(FIXEDNUMS_8x16) || defined(SEGMENT_32x50)
-  for (unsigned char c = FONT_FIRST; c <= FONT_LAST; c++)
-#else
-  for (unsigned char c = ' '; c <= '~'; c++)
-#endif
-    {
-      oled.putchar(c);
-      delay(CYCLE_CHARS);
+    for (uint16_t c = FONT.FIRST; c <= FONT.LAST; c++)
+      {
+        switch ((char)c)
+          {
+          case '\n':
+          case '\r':
+          case '\f':
+            break;
 
-      col++;
-      if (col == oled.width())
-        {
-          row++;
-          if (row == oled.height())
-            {
-              row = 0;
-            }
-          col = 0;
-          oled.set_cursor(col, row);
-        }
-    }
+          default:
+            oled.putchar(c);
+          }
+
+        if (CYCLE_CHARS != 0) delay(CYCLE_CHARS);
+
+        col++;
+        if (col == oled.width())
+          {
+            row++;
+            if (row == oled.height())
+              {
+                row = 0;
+              }
+            col = 0;
+            oled.set_cursor(col, row);
+          }
+      }
   }
 #else
   delay(100);
