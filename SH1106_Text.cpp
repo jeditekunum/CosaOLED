@@ -155,13 +155,13 @@ SH1106_Text::print(char c)
 
   bool clear = (c == ' ' && !m_font->available(c));
 
-  for (uint8_t stripe = 0; stripe < BYTES(m_font->HEIGHT); stripe++)
+  for (uint8_t band = 0; band < BYTES(m_font->HEIGHT); band++)
     {
-      if (stripe == BYTES(m_font->HEIGHT)-1)
+      if (band == BYTES(m_font->HEIGHT)-1)
         underline = underline_overlay;
 
       // Set row (page)
-      m_io->write8b(0xb0 | ((m_y * BYTES(m_font->HEIGHT)) + stripe));
+      m_io->write8b(0xb0 | ((m_y * BYTES(m_font->HEIGHT)) + band));
 
       // Set column start
       m_io->write8b(SET_LOW_COLUMN | (start & 0xf));

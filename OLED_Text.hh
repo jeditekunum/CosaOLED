@@ -31,6 +31,18 @@
 class OLED_Text : public LCD::Device {
 public:
   /**
+   * @override LCD::Device
+   * Text display mode.
+   */
+  enum {
+    NORMAL_TEXT_MODE = 0,
+    INVERTED_TEXT_MODE = _BV(0),
+    UNDERLINED_TEXT_MODE = _BV(2),
+    RAW_TEXT_MODE = _BV(7)
+  } __attribute__((packed));
+  typedef uint8_t TextMode;
+
+  /**
    * Construct OLED_Text OLED connected to given io port handler.
    * Note that these devices only accept data in bands of 8 rows.
    * Therefore each line must start at a %8 boundary.  Some fonts
@@ -100,6 +112,31 @@ public:
    * @return character written or EOF(-1).
    */
   virtual int putchar(char c);
+
+  /**
+   * Until Cosa LCD::Device has get_text_mode...
+   * Get text mode.
+   * @return mode.
+   */
+  TextMode get_text_mode()
+    __attribute__((always_inline))
+  {
+    LCD::Device::TextMode mode = LCD::Device::set_text_mode(LCD::Device::NORMAL_TEXT_MODE);
+    set_text_mode(mode);
+    return (mode);
+  }
+
+  /**
+   * @override LCD::Device until it changes
+   * Set text mode. Return previous text mode.
+   * @param[in] mode new text mode.
+   * @return previous text mode.
+   */
+  TextMode set_text_mode(TextMode mode)
+    __attribute__((always_inline))
+  {
+    return (LCD::Device::set_text_mode((LCD::Device::TextMode)mode));
+  }
 
   /**
    * @override IOStream::Device
@@ -208,5 +245,19 @@ protected:
    */
 
   virtual void print(char c);
+
+  /**
+   * Transform pixels based on text mode.
+   * @param[in] byte.
+   * @return possibly inverted byte.
+   */
+  uint8_t transform(uint8_t p)
+    __attribute__((always_inline))
+  {
+    if (m_mode & INVERTED_TEXT_MODE)
+      return (~p);
+    else
+      return (p);
+  }
 };
 #endif
