@@ -37,7 +37,7 @@ public:
   enum {
     NORMAL_TEXT_MODE = 0,
     INVERTED_TEXT_MODE = _BV(0),
-    UNDERLINED_TEXT_MODE = _BV(2),
+    UNDERLINED_TEXT_MODE = _BV(1),
     RAW_TEXT_MODE = _BV(7)
   } __attribute__((packed));
   typedef uint8_t TextMode;
