@@ -9,17 +9,17 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  */
 
 #include "OLED_Text.hh"
 
-bool 
+bool
 OLED_Text::oled_begin(const uint8_t* script)
 {
   if (m_initialized) return (false);
@@ -67,8 +67,7 @@ int
 OLED_Text::putchar(char c)
 {
   // Check for special characters
-  if (c < ' ') {
-    
+  if (!(m_mode & RAW_TEXT_MODE) && c < ' ') {
     // Carriage-return: move to start of line
     if (c == '\r') {
       set_cursor(0, m_y);
@@ -107,7 +106,6 @@ OLED_Text::putchar(char c)
       set_cursor(m_x - 1, m_y);
       return (c);
     }
-
   }
 
   if (m_x == m_columns) {

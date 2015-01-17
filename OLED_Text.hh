@@ -9,12 +9,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  */
 
 #ifndef COSA_X_OLED_TEXT_HH
@@ -32,6 +32,11 @@ class OLED_Text : public LCD::Device {
 public:
   /**
    * Construct OLED_Text OLED connected to given io port handler.
+   * Note that these devices only accept data in bands of 8 rows.
+   * Therefore each line must start at a %8 boundary.  Some fonts
+   * will display less lines than expected.  (For example, a 20
+   * high font will only display as 2 lines on a 64 high display.)
+   * LINE_SPACING is ignored in these devices.
    * @param[in] io handler.
    * @param[in] font font to display.
    * @param[in] screen_width.
@@ -49,12 +54,12 @@ public:
     m_column_offset(column_offset),
     m_screen_height(screen_height),
     m_columns(screen_width / (m_font->WIDTH + m_font->SPACING)),
-    m_rows(screen_height / (m_font->HEIGHT + m_font->LINE_SPACING))
+    m_rows(screen_height / (BYTES(m_font->HEIGHT)*8))
   {}
 
   /**
    * @override LCD::Device
-   * Start display for text output. Returns true if successful 
+   * Start display for text output. Returns true if successful
    * otherwise false.
    * @return boolean.
    */
@@ -62,7 +67,7 @@ public:
 
   /**
    * @override LCD::Device
-   * Stop display and power down. Returns true if successful 
+   * Stop display and power down. Returns true if successful
    * otherwise false.
    */
   virtual bool end()
@@ -89,7 +94,7 @@ public:
   /**
    * @override IOStream::Device
    * Write character to display. Handles carriage-return-line-feed, back-
-   * space, alert, horizontal tab and form-feed. Returns character or EOF 
+   * space, alert, horizontal tab and form-feed. Returns character or EOF
    * on error.
    * @param[in] c character to write.
    * @return character written or EOF(-1).
@@ -110,8 +115,8 @@ public:
    */
   virtual void line_clear()
   {
-    uint8_t x, y;
-    get_cursor(x, y);
+    uint8_t x = m_x;
+    uint8_t y = m_x;
     while (m_x < m_columns) putchar(' ');
     set_cursor(x, y);
   }
@@ -182,18 +187,18 @@ protected:
   /**
    * Set communication in data stream mode.
    */
-  void set_data_mode() 
+  void set_data_mode()
     __attribute__((always_inline))
-  { 
+  {
     m_io->mode(OLED_IO::DATA);
   }
 
   /**
    * Set communication in instruction stream mode.
    */
-  void set_instruction_mode() 
+  void set_instruction_mode()
     __attribute__((always_inline))
-  { 
+  {
     m_io->mode(OLED_IO::INSTRUCTION);
   }
 

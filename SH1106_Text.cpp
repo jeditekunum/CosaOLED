@@ -9,12 +9,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  */
 
 #include "SH1106_Text.hh"
@@ -135,26 +135,46 @@ SH1106_Text::print(char c)
 {
   uint8_t start = m_x * (m_font->WIDTH + m_font->SPACING) + m_column_offset;
 
-
 #ifdef OLED_IO_DEBUG
   if (m_io->data_trace())
-    trace << PSTR("SH1106_Text::print('") << c << PSTR("') BEGIN") << endl;
+  {
+    if (c >= ' ' && c <= '~')
+      trace << PSTR("SH1106_Text::print('") << c << PSTR("') BEGIN") << endl;
+    else
+      trace << PSTR("SH1106_Text::print(") << hex << (uint8_t)c << dec << PSTR(") BEGIN") << endl;
+  }
 #endif
 
   Font::Glyph glyph(m_font,c);
 
-  for (uint8_t stripe = 0; stripe < ((m_font->HEIGHT + (CHARBITS-1)) / CHARBITS); stripe++)
+  uint8_t underline_overlay = 0;
+  if (m_mode & UNDERLINED_TEXT_MODE)
+    underline_overlay = 1 << ((m_font->HEIGHT - 1) & 0x7);
+
+  uint8_t underline = 0;
+
+  bool clear = (c == ' ' && !m_font->available(c));
+
+  for (uint8_t stripe = 0; stripe < BYTES(m_font->HEIGHT); stripe++)
     {
+      if (stripe == BYTES(m_font->HEIGHT)-1)
+        underline = underline_overlay;
+
       // Set row (page)
-      m_io->write8b(0xb0 | ((m_y * ((m_font->HEIGHT + (CHARBITS-1)) / CHARBITS)) + stripe));
+      m_io->write8b(0xb0 | ((m_y * BYTES(m_font->HEIGHT)) + stripe));
 
       // Set column start
       m_io->write8b(SET_LOW_COLUMN | (start & 0xf));
       m_io->write8b(SET_HIGH_COLUMN | (start>>4));
-      
+
       set_data_mode();
       for (uint8_t i = 0; i<m_font->WIDTH; i++)
-        m_io->write8b(glyph.next());
+        if (!clear)
+          m_io->write8b(transform(glyph.next() | underline));
+        else
+          m_io->write8b(transform(0));
+      for (uint8_t i = 0; i<m_font->SPACING; i++)
+        m_io->write8b(transform(0 | underline));
       set_instruction_mode();
     }
 
