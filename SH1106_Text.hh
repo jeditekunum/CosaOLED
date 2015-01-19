@@ -3,18 +3,18 @@
  * @version 0.1
  *
  * @section License
- * Copyright (C) 2014, jediunix
+ * Copyright (C) 2014-2015, jeditekunum
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  */
 
 #ifndef COSA_X_SH1106_TEXT_HH
@@ -35,7 +35,7 @@ class SH1106_Text : public OLED_Text {
 public:
   /**
    * Construct SH1106_Text OLED connected to given io port handler. The
-   * display is initialized when calling begin(). 
+   * display is initialized when calling begin().
    * @param[in] io handler.
    * @param[in] font font to display.
    * @param[in] flipped screen.
@@ -61,13 +61,13 @@ public:
 
   /**
    * @override LCD::Device
-   * Turn display on. 
+   * Turn display on.
    */
   virtual void display_on();
 
   /**
    * @override LCD::Device
-   * Turn display off. 
+   * Turn display off.
    */
   virtual void display_off();
 
@@ -79,7 +79,7 @@ public:
 
   /**
    * @override LCD::Device
-   * Display inverse mode. 
+   * Display inverse mode.
    */
   virtual void display_inverse();
 
