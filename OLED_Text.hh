@@ -21,7 +21,7 @@
 #define COSA_X_OLED_TEXT_HH
 
 #include "Cosa/LCD.hh"
-#include "Cosa/Canvas/Font.hh"
+#include <Font.h>
 
 #include "OLED_IO.hh"
 
