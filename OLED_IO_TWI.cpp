@@ -36,9 +36,9 @@ OLED_IO_TWI::write8b(uint8_t data)
           << hex << data << endl;
 #endif
 
-  twi.begin(this);
+  twi.acquire(this);
   twi.write(mode, &data, sizeof(data));
-  twi.end();
+  twi.release();
 }
 
 void
@@ -59,7 +59,7 @@ OLED_IO_TWI::write8n(void *buf, size_t size)
     }
 #endif
 
-  twi.begin(this);
+  twi.acquire(this);
   twi.write(mode, buf, size);
-  twi.end();
+  twi.release();
 }

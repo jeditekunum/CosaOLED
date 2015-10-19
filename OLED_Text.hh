@@ -138,6 +138,9 @@ public:
     return (LCD::Device::set_text_mode((LCD::Device::TextMode)mode));
   }
 
+  /** Overloaded virtual member function write. */
+  using IOStream::Device::write;
+
   /**
    * @override IOStream::Device
    * Write data from buffer with given size to device.
