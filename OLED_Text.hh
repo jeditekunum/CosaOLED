@@ -118,11 +118,11 @@ public:
    * Get text mode.
    * @return mode.
    */
-  TextMode get_text_mode()
+  TextMode text_mode()
     __attribute__((always_inline))
   {
-    LCD::Device::TextMode mode = LCD::Device::set_text_mode(LCD::Device::NORMAL_TEXT_MODE);
-    set_text_mode(mode);
+    LCD::Device::TextMode mode = LCD::Device::text_mode(LCD::Device::NORMAL_TEXT_MODE);
+    text_mode(mode);
     return (mode);
   }
 
@@ -132,10 +132,10 @@ public:
    * @param[in] mode new text mode.
    * @return previous text mode.
    */
-  TextMode set_text_mode(TextMode mode)
+  TextMode text_mode(TextMode mode)
     __attribute__((always_inline))
   {
-    return (LCD::Device::set_text_mode((LCD::Device::TextMode)mode));
+    return (LCD::Device::text_mode((LCD::Device::TextMode)mode));
   }
 
   /** Overloaded virtual member function write. */

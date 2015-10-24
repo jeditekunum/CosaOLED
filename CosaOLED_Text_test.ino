@@ -244,7 +244,7 @@ void setup()
         << PSTR(" characters")
         << endl;
 
-  oled.set_text_mode(OLED_Text::RAW_TEXT_MODE);
+  oled.text_mode(OLED_Text::RAW_TEXT_MODE);
 #endif
 }
 
@@ -252,7 +252,7 @@ void loop()
 {
 #ifdef CYCLE_CHARS
   if (FONT.FIRST < ' ')
-    oled.set_text_mode(oled.get_text_mode() | OLED_Text::INVERTED_TEXT_MODE);
+    oled.text_mode(oled.text_mode() | OLED_Text::INVERTED_TEXT_MODE);
 
 #if CYCLE_CHARS == 0
   MEASURE("full character set ", 1)
@@ -261,7 +261,7 @@ void loop()
     for (uint16_t c = FONT.FIRST; c <= FONT.LAST; c++)
       {
         if (c == ' ' || c == 128)
-          oled.set_text_mode(oled.get_text_mode() ^ OLED_Text::INVERTED_TEXT_MODE);
+          oled.text_mode(oled.text_mode() ^ OLED_Text::INVERTED_TEXT_MODE);
 
         oled.putchar(c);
 
@@ -270,8 +270,8 @@ void loop()
   }
 
   // Save text mode, set to normal
-  uint8_t savemode = oled.get_text_mode();
-  oled.set_text_mode(OLED_Text::NORMAL_TEXT_MODE);
+  uint8_t savemode = oled.text_mode();
+  oled.text_mode(OLED_Text::NORMAL_TEXT_MODE);
 
   // Clear rest of screen
   uint8_t x, y;
@@ -284,10 +284,10 @@ void loop()
     }
 
   // Restore text mode
-  oled.set_text_mode(savemode);
+  oled.text_mode(savemode);
 
   // Flip underline for next pass
-  oled.set_text_mode(oled.get_text_mode() ^ OLED_Text::UNDERLINED_TEXT_MODE);
+  oled.text_mode(oled.text_mode() ^ OLED_Text::UNDERLINED_TEXT_MODE);
 
   sleep(2);
   oled.display_clear();
