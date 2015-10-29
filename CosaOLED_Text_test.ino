@@ -52,9 +52,9 @@
 //#define FONT_12x24
 
 
-#include "Cosa/IOStream/Driver/UART.hh"
+#include "Cosa/UART.hh"
 #include "Cosa/Trace.hh"
-#include "Cosa/RTC.hh"
+#include "Cosa/RTT.hh"
 
 #include "OLED_IO_TWI.hh"
 #include "OLED_IO_SPI.hh"
@@ -214,7 +214,7 @@ uint8_t row = 0;
 
 void setup()
 {
-  RTC::begin();
+  RTT::begin();
   uart.begin(9600);
   trace.begin(&uart);
   trace << PSTR("CosaCanvasFont: started ")
